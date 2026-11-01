@@ -341,7 +341,84 @@ user: all three asked about.
 
 ## boom check: its three layers and what blocks a merge
 
-Not yet asked.
+### What the material settles
+
+From the change's record on the check, rulings Q4 and Q5:
+
+- **`check-asks-direction`** (requirement). The check asks whether a
+  change moves the repository away from a standing claim the change
+  touches, never whether the repository satisfies a claim; a claim the
+  change leaves alone holds, so the gate blocks regressions and never
+  the backlog.
+- **`three-layers-cheapest-first`** (requirement). Scope, then rules,
+  then prose; a claim an earlier layer settles reaches no later one, and
+  the reviewer gets the diff and the claims still to settle, and nothing
+  else. The map's free rule fails a new dependency between contexts that
+  no relationship allows, and a marker naming no standing claim fails.
+- **`what-blocks`** (requirement). Violated blocks the merge; unclear
+  fails until a person answers for that change, and the answer is never
+  a verdict; a check writes no verdict and moves none.
+- **`check-reads-its-tree`** (requirement). The check reads its claims
+  from the slice committed in the change's own tree, so a claim is
+  checked once its sync lands, and a gate that caches by content
+  replays an unchanged check.
+
+### Asked
+
+**How does boom start its reviewer and its judge, and what if the model
+cannot be reached, as in a gate that allows only localhost?** The user:
+an agent program's command, and not run when unreachable.
+
+- **`reviewer-is-an-agent-command`** (requirement). The reviewer and the
+  judge are an agent program's command that the repository's
+  `.config/boom.toml` names, with its exact model, given the closed
+  inputs on standard input and answering JSON on standard output; the
+  model is an input of the check, so a new model runs the check again.
+  boom holds no model credential (core.3). Rules out: a model key read
+  or stored by boom; "latest" or an unpinned model name. Not ruled out:
+  different programs for the judge and the reviewer. Source: the user,
+  2026-11-01.
+- **`unreached-is-not-run`** (requirement). A claim the check could not
+  have reviewed, its reviewer unreachable, has no outcome: `boom check`
+  exits the not-run code the gate's policy names (sluice 114), so the
+  gate records no outcome, and it never passes the claim. An answer not
+  of the reviewer's form reads unclear. Rules out: a prose claim passed
+  because its review failed. Not ruled out: a gate policy that allows
+  the model's endpoint. Source: the user, 2026-11-01; sluice's statement,
+  83, 84 and 114.
+
+**Where is a person's answer to an unclear claim kept?** The user:
+signed, in the change's own tree.
+
+- **`answers-signed-in-the-tree`** (requirement). `boom check --answer`
+  writes the person's signed statement, presence required, into the
+  change's own tree under `.boom/answers/`, naming the claim at its
+  version and the digest of the change it answers: the diff of the files
+  in that claim's scope, answers left out. The check reads it there, and
+  an answer whose digest no longer matches the change is void. Rules
+  out: an answer an agent wrote; an answer carried to a later, different
+  change; an answer read as a verdict. Not ruled out: the answer landing
+  with the change, as the record of who answered; the same person
+  answering again after the change moves. Source: the user, 2026-11-01.
+  This settles the change's question of where an answer is kept.
+
+**What stops a change from editing the slice it is checked against?**
+The user: only what the ledger gives.
+
+- **`slice-only-as-the-ledger-gives`** (requirement). A change that
+  touches the slice fails the check unless its new slice is exactly what
+  the ledger, at the commit the slice names, gives for this repository,
+  and that commit is on the ledger's branch and no older than the one
+  the replaced slice names. That check reads the ledger at a named
+  commit, so its outcome still caches by content; where the gate cannot
+  read the ledger, it is not run, never passed. Rules out: a claim
+  deleted from the slice by hand; a slice naming a ledger commit it was
+  not written from; a slice rolled back to an older one, from before the
+  claim a change breaks was accepted; a change that edits code and the
+  slice at once. Not ruled out: boom's own sync change changing it.
+  Source: the user, 2026-11-01; the clause on the ledger only moving
+  forward follows from the answer. This settles the change's question of
+  what keeps a change from editing its slice.
 
 ## Reconciliation across repositories
 
