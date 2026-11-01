@@ -1,0 +1,129 @@
+---
+title: How it's used
+description: boom's records, the events that propose, accept, reject, supersede and annotate them, a status read from the events, and the views computed from the ledger.
+---
+
+import Diagram from '../../components/Diagram.astro';
+
+boom keeps a **ledger**: a set of records, and the events that act on
+them. A person or an agent adds an event with a command; nobody edits a
+record's status, and nobody edits a view. Everything else on this page
+follows from that.
+
+## Where the ledger lives
+
+The ledger is plain text in a Git repository of its own, the **state
+repository**. boom writes it and commits to it directly. Each
+repository the ledger describes holds only what `boom sync` writes into
+it: the standing claims in its scope, as rules to read and as the slice
+`boom check` reads, and each decision as a MADR file.
+[Configuration](/boom/configuration/) shows both on disk.
+
+## The records
+
+| Record | What it holds | Example |
+|---|---|---|
+| **claim** | A short statement and its kind. At least one scenario saying how one would know it holds. For a decision, a body: its context, the options, the outcome and its consequences. What it attaches to, an optional check rule, and the claim it supersedes. | `invoices-final`, an invariant: "An issued invoice is never edited; a correction is a credit note." |
+| **narrative** | An explanation for the design book, in the words its author wrote at the time, scoped to a context. It includes claims by name. | The intent behind refunds, written while they were planned. |
+| **context** | A part of the system with its own model and language: its name, its responsibilities, and its home, the repository its code lives in, narrowed by paths. | `billing`, homed in `shop` under `src/billing/`. |
+| **relationship** | Two contexts and how one depends on the other: which is upstream, the style of the integration, and the direction a dependency may run. | `orders` depends on `billing`, never the reverse. |
+| **term** | A word as one context means it. | "invoice" in `billing`, which `sales` means otherwise. |
+
+A claim's kind says how it is held:
+
+- An **invariant** is something the code holds at every revision: "An
+  issued invoice is never edited."
+- A **decision** is a choice the code follows, with the reasoning
+  written when it was made: "Every amount carries its currency."
+- An **assumption** is about the world, not the code: "Every order is in
+  one currency." No repository can show that it holds, so `boom check`
+  never judges one. A person reviews it again when something challenges
+  it, such as a new release of a dependency it is about.
+
+A claim attaches to a context, to a relationship, which puts it in scope
+on both sides, or to the whole system. Each record has a **name** that
+stays and a **version**, the hash of what it says. Changing its text makes
+a new version; moving what a claim attaches to, or how it is checked,
+leaves its version alone.
+
+## The events
+
+| Event | Who writes it | What it does |
+|---|---|---|
+| `proposed` | an agent or a person | Adds a record, or a new version of a standing one. A proposed claim is visible, and no work is checked against it. |
+| `accepted` | a person, never an agent | The version stands. |
+| `rejected` | a person | The proposed version is closed. |
+| `superseded` | a person, by accepting a claim that names the one it replaces | The old claim no longer stands, and the new one stands in its place. |
+| `annotated` | an agent or a person | A note on one version, such as a review of the design book leaves. The status does not change. |
+
+Each event names the record and the version it acts on, its actor, a
+person or an agent, and its provenance: the session, transcript or run it
+came from. Events are appended, and none is changed or removed. The
+design adds a few more for later: `retired`, a claim withdrawn with
+nothing in its place; `attached` and `detached`, which move what a claim
+attaches to; and `challenged` and `due`, which mark a verdict for judging
+again.
+
+## Status, read from the events
+
+<Diagram name="events" caption="Two claims, one log. The invariant is proposed, annotated, accepted and later superseded; the assumption is proposed and rejected. Each status is read from the log, and the note changes none." />
+
+A record stores no status. boom reads it from the events each time
+anyone asks:
+
+| Status | When |
+|---|---|
+| proposed | Its latest version has a `proposed` event and no `accepted` or `rejected` one. |
+| standing | A version was accepted, and nothing has superseded or retired the claim since. |
+| rejected | Its proposal was rejected. |
+| superseded | A person accepted a claim that replaces it. |
+
+A standing claim changes in one of two ways:
+
+- **Amend**: propose a new version of the same claim, with `boom propose
+  --amends`. Once a person accepts it, the new version stands, and the
+  earlier one stays in the history.
+- **Supersede**: propose a new claim that names the one it replaces, with
+  `boom supersede`. Once a person accepts it, the old claim is
+  superseded.
+
+Since events are only appended, two people who add events on two
+branches rarely meet a conflict in Git, and the history is the record
+of who agreed to what.
+
+## The views, computed
+
+| View | What it is | Made by |
+|---|---|---|
+| rules for a scope | The standing invariants for a repository or a context: the rules an agent reads before it edits. | `boom render rules`, and `boom sync` into each repository |
+| decision records | Each decision as a MADR file, numbered, in `docs/adr/`. | `boom render adrs`, and `boom sync` |
+| design book | mdBook source: the narratives, the claims that apply in each chapter, a context map, indexes and the history of each supersession, every paragraph anchored by its record's name. | `boom render book` |
+| context map | The contexts and the relationships between them, drawn. | `boom render map` |
+| check results | Each claim a change touches, and whether the change holds it. | `boom check` |
+
+None of these is the truth: boom computes each one again from the
+ledger, and the same ledger always gives the same output. To change a
+view, change the ledger.
+
+Reasoning is written when a decision is made. A decision's context,
+options and consequences are part of the claim as proposed, and a
+person reviews them on accepting it. Rendering only arranges what the
+ledger holds.
+
+## Verdicts: where a repository stands
+
+A check asks whether one change moves the code away from a claim. A
+**verdict** asks where a repository stands against a claim: satisfied,
+partial, not satisfied or not applicable. `boom judge` judges it at the
+repository's shared head and records the evidence it found. Verdicts
+are records too, appended beside the claims and never edited. A verdict
+holds until the claim's version moves, its evidence leaves the shared
+head, or something challenges the claim. The claims judged partial or
+not satisfied are the **backlog**, which `boom backlog` lists.
+
+## Contexts, once you want them
+
+Nobody has to draw a map to start. Until someone does, boom treats each
+repository as one context, and a claim written for a repository
+attaches to it. Drawing contexts and relationships later changes no
+verdict: a claim keeps what it attaches to until someone moves it.

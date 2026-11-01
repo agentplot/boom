@@ -1,0 +1,110 @@
+---
+title: Integrations
+description: What the Claude Code plugin and the herdr plugin do, what boom mcp offers an agent, and how sluice, flume and millpond use boom through its command line.
+---
+
+import Diagram from '../../components/Diagram.astro';
+
+boom is one engine, a library and the `boom` command, with thin wrappers
+around it. Each wrapper, and each tool that works beside boom, reaches
+it the same way: it runs `boom` with `--json` and reads what boom prints,
+or it starts `boom mcp`. None of them builds on boom's code, and boom
+calls none of them.
+
+<Diagram name="fits" caption="Every tool reaches boom by its command line: the plugins through boom mcp, sluice by running boom check in its gate, flume by asking what applies, and millpond by proposing and challenging claims. boom writes only its own ledger." />
+
+## `boom mcp`
+
+An MCP server on standard input and output, which an agent's harness
+starts. Its tools are boom's commands, each taking the command's
+arguments and returning its `--json` object:
+
+| Tool | Command | An agent uses it to |
+|---|---|---|
+| `propose` | `boom propose` | write down a claim, narrative, context, relationship or term while it plans |
+| `supersede` | `boom supersede` | propose that a standing claim be replaced |
+| `annotate` | `boom annotate` | leave a note on one version |
+| `query` | `boom query` | look up what applies to the files it is about to edit |
+| `check` | `boom check` | read its change against the claims before it hands off |
+| `render` | `boom render` | build the design book for a person to read |
+
+Accepting and rejecting are a person's. Whether `boom mcp` offers them at
+all, and how boom refuses an agent's accept, are part of the [open
+question of who accepts](/boom/roadmap/#open-questions).
+
+## The Claude Code plugin
+
+`boom mcp`, and three skills, one for each moment an agent meets the
+ledger:
+
+- **While planning**, a skill draws out the claims and narratives a plan
+  rests on and proposes them as the agent goes, in its words of that
+  moment. A claim it proposes survives a rewrite of the code, names what
+  someone could observe, and can be judged from the repository alone. It
+  never names a file, a colour, a setting or a step of a pipeline: a
+  claim about a file is a check rule.
+- **Before editing**, a skill asks what applies to the files the agent
+  is about to change, with `boom query`, so the agent works to the
+  claims that stand.
+- **Before handing off**, a skill runs `boom check` on the agent's
+  change. A violated claim sends the agent back to fix the code or to
+  propose a change to the claim.
+
+[An agent proposes, you accept](/boom/guides/an-agent-proposes/) shows
+the first, and [A change breaks a
+claim](/boom/guides/a-change-breaks-a-claim/) the last.
+
+## The herdr plugin
+
+The same engine, wrapped for agents run in herdr as the Claude Code
+plugin wraps it for Claude Code. What the plugin shows in herdr, and
+which keys it adds, the design has yet to settle.
+
+## sluice
+
+sluice runs `boom check` in its merge gate, as a moon task in a layer the
+branch requires, beside the tests. A violated or unclear claim fails the
+task, and sluice lands nothing.
+
+```yaml
+# shop/moon.yml
+tasks:
+  claims:
+    command: 'boom check --base main'
+    tags: [check-fast]
+```
+
+```toml
+# shop/.config/sluice.toml
+[branches.main]
+required = ["#check-fast"]
+```
+
+A state repository can land through sluice as well, with `boom sync` run
+after each merge, so each accepted claim reaches the pull request of
+every repository in its scope.
+
+## flume
+
+When flume launches an agent on a piece of work, it asks boom what
+applies to the paths the work touches, with `boom query <paths> --json`.
+It puts the standing claims and the rules for that scope in the agent's
+task. The claims the agent proposes as it works reach the ledger through
+`boom propose`, with the run named as their provenance.
+
+## millpond
+
+millpond and boom work both ways, by command:
+
+- A meeting's transcript that reaches millpond becomes proposed claims,
+  through `boom propose`.
+- A report of a new release challenges the assumptions about that
+  dependency, through `boom challenge`, and a person reviews each again.
+- Each proposal that waits on a person shows in millpond's inbox, read
+  with `boom query --status proposed --json`.
+
+## mdBook
+
+`boom render book` writes mdBook source and runs the `mdbook` command
+when it is installed. boom embeds none of mdBook's code, so a project
+keeps its own mdBook, theme and preprocessors.

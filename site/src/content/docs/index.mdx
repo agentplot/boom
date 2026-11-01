@@ -1,0 +1,93 @@
+---
+title: boom
+description: boom keeps a ledger of what a project has claimed about itself, computes every view of it from the ledger, and checks each change against the claims that stand. Designed, not built.
+template: splash
+hero:
+  tagline: "A ledger of what a project has claimed about itself: its invariants, its decisions and its assumptions. Every view of it is computed, and <code>boom check</code> reads each change against the claims that stand."
+  actions:
+    - text: How it's used
+      link: /boom/how-its-used/
+      icon: right-arrow
+    - text: Your first claims
+      link: /boom/guides/first-claims/
+      icon: right-arrow
+      variant: secondary
+    - text: GitHub
+      link: https://github.com/agentplot/boom
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+## Why
+
+A project says things about itself in many places: an invariant in a
+rules file, a decision in an ADR, an assumption in a planning note, a
+boundary in a context map. Each is written once, and they drift apart.
+An agent that reads one never sees the others, and nobody can say who
+agreed to which. boom keeps all of them as one ledger of claims, records
+who proposed each and who accepted it, and computes every other form
+from that ledger.
+
+<CardGrid>
+  <Card title="One ledger" icon="document">
+    Claims, and the narratives, contexts, relationships and terms around
+    them, kept as plain-text recfiles in a Git repository you own.
+  </Card>
+  <Card title="Status read from events" icon="list-format">
+    Each proposal, acceptance, rejection, supersession and note is an
+    event, appended and never edited. A claim's status is read from its
+    events.
+  </Card>
+  <Card title="Views computed" icon="open-book">
+    The rules for a scope, the decision records, the design book and the
+    context map are computed from the ledger. Nobody edits them by hand.
+  </Card>
+  <Card title="Checked at the merge" icon="approve-check">
+    `boom check` reads a change against the standing claims it touches,
+    cheapest check first. A violated claim blocks the merge.
+  </Card>
+</CardGrid>
+
+## Who it is for
+
+- **A developer working with coding agents**, who wants each decision
+  and invariant written once and read by every agent that touches the
+  code.
+- **A project where agents propose and people decide.** An agent
+  proposes claims as it plans; only a person accepts one.
+- **A project that keeps ADRs in MADR.** `boom import adr` takes them
+  in, and boom writes them back out as it records new decisions.
+- **A project whose merges should keep the promises it made.**
+  `boom check` runs in the merge gate beside the tests.
+
+## Where it stands
+
+boom is designed and not built. Its repository holds its rules, its
+first decision record and a binary that prints its version. Every page
+here shows what boom will do, and the [roadmap](/boom/roadmap/) lists
+what the design has settled and what it has yet to settle.
+
+<CardGrid>
+  <LinkCard
+    title="How it's used"
+    description="The records, the events, a status read from events, and the views computed from the ledger."
+    href="/boom/how-its-used/"
+  />
+  <LinkCard
+    title="boom check"
+    description="Three layers, cheapest first, and what a violated, a superseded and an unclear claim lead to."
+    href="/boom/check/"
+  />
+  <LinkCard
+    title="Walkthroughs"
+    description="Your first claims, an agent's proposal, a change that breaks a claim, and importing your ADRs."
+    href="/boom/guides/first-claims/"
+  />
+  <LinkCard
+    title="Integrations"
+    description="The Claude Code and herdr plugins, boom mcp, and how sluice, flume and millpond call boom."
+    href="/boom/integrations/"
+  />
+</CardGrid>

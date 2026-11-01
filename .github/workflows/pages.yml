@@ -1,0 +1,61 @@
+# The site (site/), built by Astro and published to GitHub Pages at
+# https://agentplot.github.io/boom. Once, by hand, the repository's Pages
+# source must be set to "GitHub Actions" (Settings → Pages → Build and
+# deployment → Source); after that every push to main that touches the site
+# deploys.
+#
+# The prose and the build run in the devenv shell, by the moon tasks the
+# gate runs, so Vale and bun are the versions devenv.nix pins and no second
+# file pins them (core.6).
+name: pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - site/**
+      - .vale.ini
+      - styles/**
+      - .github/workflows/pages.yml
+      - devenv.nix
+      - devenv.yaml
+      - devenv.lock
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: cachix/install-nix-action@v31
+      - uses: cachix/cachix-action@v16
+        with:
+          name: devenv
+      - run: nix profile add nixpkgs#devenv
+      # The prose, by Vale, before anything is built (.vale.ini).
+      - run: devenv shell -- moon run site:prose
+      # The diagrams are drawn by the build itself (src/diagrams/), so no
+      # browser is needed here.
+      - run: devenv shell -- moon run site:build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,10 +1,11 @@
-# moon runs boom's checks: one project per crate, holding its
-# own checks, and the root, holding what spans the tree (core.5). Each
-# check is tagged with its layer, which a branch's policy requires by tag
-# (.config/sluice.toml):
+# moon runs boom's checks: one project per crate and one for the site,
+# each holding its own checks, and the root, holding what spans the tree
+# (core.5). Each check is tagged with its layer, which a branch's policy
+# requires by tag (.config/sluice.toml):
 #   check-fast    the crate's format, lint, type check and tests; the
-#                 root's format, toolchain, records, specs and changes.
-#                 main requires it
+#                 site's format, lint, type check, diagrams, prose and
+#                 build; the root's format, toolchain, records, specs and
+#                 changes. main requires it
 # A task whose inputs are identical to a run that passed on this host, in
 # any worktree, replays from .moon/cache/outputs (a link into the git common
 # dir, made by devenv.nix) instead of running again.
@@ -12,6 +13,7 @@ $schema: 'https://moonrepo.dev/schemas/workspace.json'
 
 projects:
   boom: 'crates/boom'
+  site: 'site'
   root: '.'
 
 # --affected compares against the merge-base with main.

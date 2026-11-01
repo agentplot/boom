@@ -17,19 +17,34 @@ in
 
   # What no formatter owns, each with its reason (core.5).
   settings.excludes = [
-    # Prose: the docs, the records and the README; no formatter here
-    # rewraps prose.
+    # Prose: the docs, the records, the README and the site's pages, which
+    # Vale checks (site:prose); no formatter here rewraps prose.
     "*.md"
-    # Written by cargo and devenv in their own layouts.
+    "*.mdx"
+    # Written by cargo, devenv and bun in their own layouts.
     "*.lock"
+    # Drawn marks and the README's diagram, which site:test holds to what
+    # the site draws; no formatter keeps an SVG stable.
+    "*.svg"
+    # Vale's own configuration and word list, which no formatter reads.
+    ".vale.ini"
+    "styles/config/vocabularies/**"
     # Lists in gitignore syntax.
     ".gitignore"
+    # The site's components: Biome formats only an .astro file's
+    # frontmatter, and only experimentally; astro check reads them
+    # (site:typecheck).
+    "site/**/*.astro"
     # Empty markers that keep OpenSpec's empty directories in the tree.
     "**/.gitkeep"
     # Build outputs and caches.
     "target/**"
     ".devenv/**"
     ".moon/cache/**"
+    "site/node_modules/**"
+    "site/dist/**"
+    "site/.astro/**"
+    "site/shots/**"
   ];
 
   programs.rustfmt.enable = true;
@@ -53,6 +68,28 @@ in
   settings.formatter.shfmt.priority = 2;
 
   # .prototools is TOML under a name with no extension.
+  # Biome lays out the site's TypeScript, JavaScript, CSS and JSON by the
+  # settings biome.json holds, the ones site:format checks and site:lint
+  # lints by, so the two never differ. Biome is the package devenv.nix puts
+  # in the shell.
+  settings.formatter.biome = {
+    command = "${pkgs.biome}/bin/biome";
+    options = [
+      "format"
+      "--write"
+      "--no-errors-on-unmatched"
+    ];
+    # treefmt's * crosses directories: each names every such file under
+    # site/, its dependencies and outputs excluded above.
+    includes = [
+      "biome.json"
+      "site/*.ts"
+      "site/*.mjs"
+      "site/*.css"
+      "site/*.json"
+    ];
+  };
+
   programs.taplo.enable = true;
   settings.formatter.taplo.includes = [ ".prototools" ];
   programs.yamlfmt.enable = true;
