@@ -149,7 +149,106 @@ The user: names everywhere, now.
 
 ## The ledger's storage and merge behaviour
 
-Not yet asked.
+### What the material settles
+
+- The ledger is plain-text recfiles in git, written by boom directly,
+  and a rejected push is applied again and retried (decision 24 of the
+  design's log; record 0001: the format is open so a project trusts that
+  it owns its history).
+- Order is the ledger's history, one line, and no status depends on a
+  clock (the change's record on events, ruling Q2).
+- The family's storage convention (flywheel-next,
+  `design/storage/storage.md`): five layers (host, worktree, clone,
+  shared branch, content), a piece of state in the lowest layer that
+  holds every reader it has; one protocol for writing a shared branch
+  (its 5.2); recutils at rest on a shared branch, each record naming
+  `format: <tool>-<record>/<n>`, JSON only in flight; a repository's
+  declaration in `.config/<tool>.toml`; and its rule 2, that a tool's
+  records about one repository stay with that repository.
+
+### Asked
+
+**Where does a ledger live, and where may an event be written?** The
+user: "As long as this is grounded in the storage rules we established
+for the flywheel tools, I believe. This is under Flywheel Next design I
+think." boom was then set against that convention, and the user kept it.
+
+- **`ledger-on-a-shared-branch`** (requirement). A ledger is layer 4 of
+  the family's storage convention: a branch the operator names, in a
+  repository the operator names, under boom's own prefix `boom/`. A
+  project of one repository may name a branch of that repository; a
+  ledger may share a state branch with another tool's state, such as
+  millpond's `inbox/`, each under its own prefix. Rules out: ledger
+  files on a working branch, landed with the code; a merge commit on the
+  ledger's branch; boom writing to a gated main. Source: the user,
+  2026-11-01; the storage convention, layer 4 and its decision 5.
+- **`ledger-written-by-the-family-protocol`** (requirement). boom writes
+  its branch by the convention's 5.2 protocol: fetch the tip into
+  `$XDG_CACHE_HOME/boom/git/`; apply the write to that tip and check it
+  with `recfix` and boom's own rules (a name now taken, an amendment's
+  base no longer standing, an actor's role); commit it as one commit
+  through a temporary index, touching no working tree; push without
+  force from the tip that was read; when refused, apply it again to the
+  new tip, a bounded number of times, then report. A branch with no
+  remote takes the same steps with an `update-ref`. The history stays
+  one line, and a clash between two writers is caught by the check at
+  the new tip, which refuses the second. Rules out: a forced push; a
+  write that touches a working tree; a merge; a lock standing in for the
+  push. Source: the storage convention, 5.2.
+- **`records-name-their-format`** (requirement). Every record at rest
+  is recutils and names its format and major version, `format:
+  boom-claim/1`; JSON travels only in flight; boom reads every earlier
+  version of a record as it stands. Source: the storage convention, rule
+  4 and decision 14.
+- **`boom-state-by-layer`** (requirement). Where each repository is
+  checked out on a host, and the host's other settings, are layer 1,
+  under `$XDG_CONFIG_HOME/boom/`; caches under `$XDG_CACHE_HOME/boom/`.
+  A repository declares itself to boom in `.config/boom.toml`, read at
+  the branch's revision. What boom puts in a repository it describes,
+  the slice among it, is layer 5 and lands as that repository's other
+  work does. Rules out: a checkout path in a committed file; boom
+  committing straight into a repository it describes. Source: the
+  storage convention, layers 1 and 5, decisions 2 and 15.
+
+**Hand edits: someone edits the recfiles, or an agent appends an
+`accepted` event itself.** The user: validated on read.
+
+- **`validated-on-read`** (requirement). boom holds every event it reads
+  to the checks it holds a write to (its form, its actor's role, its
+  signature); an event that fails counts for nothing, and a commit that
+  changes or removes a line already written is reported as tampering,
+  naming the commit. Rules out: a status read from an event boom would
+  have refused to write; an agent's hand-written accept standing; an
+  edited event read as its new text. Not ruled out: reading the files
+  with `recsel`, with no boom; a keeper reverting the bad commit.
+  Source: the user, 2026-11-01.
+
+**May boom keep an index or cache beside the ledger?** The user: derived
+only.
+
+- **`caches-derived-only`** (requirement). Anything boom keeps besides
+  the ledger is computed from it, kept outside it, and never read as the
+  truth: deleting it changes no answer, and a cache built from an older
+  head is rebuilt before it answers. Rules out: a status, a queue or a
+  version stored and read back; a cache committed to the ledger; an
+  answer from a cache older than the head. Not ruled out: an index
+  under `$XDG_CACHE_HOME/boom/`; no cache at all. Source: the user,
+  2026-11-01; core.2.
+
+**The convention's rule 2 keeps a tool's records about one repository
+with that repository; decision 39 keeps verdicts beside the claims.
+Which holds?** The user: beside the claims.
+
+- **`verdicts-beside-the-claims`** (requirement). Verdicts and due
+  events are appended on the ledger's branch, beside the claims, a named
+  departure from the storage convention's rule 2: a verdict names a
+  claim's version, which is the ledger's history, and anyone holding the
+  ledger computes every cell's status from it alone. Rules out: a
+  verdict under `refs/boom/` in the judged repository; a status that
+  needs every repository's refs fetched first. Not ruled out: a verdict
+  naming the revision it judged; each host appending only to files of
+  its own, so writers never meet. Source: the user, 2026-11-01; decision
+  39.
 
 ## Who may propose, accept, reject and supersede, and how a person's word is proven
 
