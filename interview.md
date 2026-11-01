@@ -252,7 +252,92 @@ Which holds?** The user: beside the claims.
 
 ## Who may propose, accept, reject and supersede, and how a person's word is proven
 
-Not yet asked.
+### What the material settles
+
+- **`accept-by-role-never-agent-never-author`** (requirement). A
+  proposed version of any record stands only by the accept of a person
+  whose role carries the permission; an accept by an agent, by the actor
+  of that version's `proposed` event, or by a person without the role is
+  refused, says why and records nothing; the accept that supersedes a
+  claim is held to the same. Source: decision 41; the change's record on
+  who may accept.
+- **`reject-is-a-persons`** (requirement). Only a person rejects, never
+  an agent. Source: the same.
+- **`agents-propose`** (requirement). An agent proposes, annotates, and
+  proposes amendments and supersessions, and never gets a change through
+  on its own. A person working alone accepts what an agent proposed, and
+  a version they proposed themselves waits on another person. Source:
+  the same.
+- **`mcp-offers-no-accept`** (requirement). `boom mcp`, which serves an
+  agent, offers no accept and no reject. Source: the same.
+
+### Asked
+
+**What proves an accept or a reject was the person's act, when an agent
+on the same host runs as the same user?** The user: signed, with the
+person present.
+
+- **`persons-acts-signed-with-presence`** (requirement). An event whose
+  actor is a person carries that person's signature over the event, by a
+  key the ledger registers to them that signs only with the person
+  present (a hardware key's touch, a passkey or a biometric prompt);
+  boom verifies it before it writes the event and again whenever it
+  reads it (`validated-on-read`). An agent's event is unsigned and names
+  its session or run as provenance. Rules out: an accept with no
+  signature, or signed by a key the ledger does not register to its
+  actor; a key that signs unattended, a plain key file or a forwarded
+  agent with no prompt; an agent's event naming a person as its actor.
+  Not ruled out: verifying a signature with the format's own tools and
+  no boom. Source: the user, 2026-11-01.
+
+**Is "keeper" the right word?** The user asked whether a better term was
+needed, and took **owner**.
+
+- **`owner-is-the-word`** (requirement, vocabulary). The person or
+  people who grant roles and register keys in a ledger are its
+  **owners**; "operator" keeps the family's meaning, the person who runs
+  a host. The change's "keeper" becomes "owner" everywhere. Source: the
+  user, 2026-11-01.
+
+**How do roles, grants and keys change, and who holds that power
+first?** The user: "Presumably for open source use, the user would be
+able to define self-sign or something without having the verified
+owner, I believe, right?" Asked which reading was meant, the user took
+the self-registered owner.
+
+- **`self-registered-first-owner`** (requirement). The ledger's first
+  commit registers its maker's own key as owner, verified by nobody
+  else; after it, a role, a grant of a role or a registered key changes
+  only by an event an owner signs, with the owner present. boom proves
+  that each person's act was signed by the key registered to them with
+  the person present, and never claims to prove who that person is in
+  the world. Rules out: roles or keys changed by a commit to a file,
+  `.config/boom.toml` among them; an agent registering a key or granting
+  a role. Not ruled out: several owners; an owner revoking a key, the
+  events it signed before staying valid; an outside authority added
+  later beside the self-registered key. Source: the user, 2026-11-01.
+
+**Which acts besides accepting a version need a person's accept?** The
+user: all three asked about.
+
+- **`retire-attach-and-rules-need-a-person`** (requirement). Retiring a
+  claim with nothing in its place, moving what a claim attaches to, and
+  adding or changing its check rule are each proposed, by anyone, and
+  take effect only on a person's accept under
+  `accept-by-role-never-agent-never-author`; none changes the claim's
+  version. Rules out: an agent adding a check rule that passes, so its
+  violation never reaches the reviewer; an agent detaching a claim from
+  the context its change breaks; a claim withdrawn by a file edit.
+  Source: the user, 2026-11-01. This settles the change's question of
+  how a claim is withdrawn and how an attachment moves: by proposals a
+  person accepts.
+
+### Open
+
+- **`open-signature-format`**. The format of a person's signature: the
+  family's attestation format (an in-toto statement in a DSSE envelope),
+  or git's SSH signatures, or another, so that a reader can verify it
+  with no boom.
 
 ## boom check: its three layers and what blocks a merge
 
