@@ -631,7 +631,83 @@ waits on the person and what applies.
 
 ## sluice, flume and millpond, by boom's command line
 
-Not yet asked.
+### What the material settles
+
+From the user's ruling of 2026-11-01 on millpond (both directions, the
+backlog only where no other planner plans), decisions 40 and 42, and the
+change's profiles:
+
+- **`tools-call-commands`** (requirement). boom reads no other tool's
+  files, and every exchange with another tool is a command and its
+  output; boom runs none of sluice, flume or millpond.
+- **`sluice-gates-with-check`** (requirement, profile). sluice runs
+  `boom check --base main` as a moon task in a layer the branch
+  requires, the slice among its inputs, so moon replays an unchanged
+  check; in sluice's verdict it is one row.
+- **`flume-asks-what-applies`** (requirement, profile). Before work,
+  flume asks `boom query <paths> --json` and puts the standing claims and
+  the rules for that scope in the agent's task; claims proposed during a
+  run reach the ledger by `boom propose` with the run as provenance.
+- **`millpond-both-ways`** (requirement, profile). A millpond signal
+  that bears on a claim reaches boom as `boom challenge <name> --signal
+  <key>` or as `boom propose` with the signal as provenance; millpond
+  takes `boom backlog --planner millpond --json` in as items, each entry
+  once by its key, only for the repositories whose planner setting names
+  it; a repository naming another planner has none of its backlog taken
+  in by millpond; proposals awaiting a person show as millpond signals
+  where millpond is the planner.
+
+### Asked
+
+**Who runs `boom reconcile` and `boom judge` in the family?** The user:
+both, after each landing.
+
+- **`reconcile-and-judge-after-each-landing`** (requirement, profile).
+  After each landing on a repository's main, what runs after a landing
+  there runs `boom reconcile` and then `boom judge` for that
+  repository, in the background, a failure reported beside the landing
+  and never making it not landed (sluice 122); a host's schedule runs
+  both for every repository it holds, so a quiet one converges. Rules
+  out: a landing citing a claim whose cell waits on a person to run the
+  judge; the judge run inside the gate, since a check writes no verdict.
+  Not ruled out: a person, millpond or flume running either by its
+  command line. Source: the user, 2026-11-01.
+
+**How does the claim a backlog entry names reach the commits of the
+work that serves it?** The user first asked: "I'm not sure I understand
+this one. How is flume going to know about the citation?" It would not:
+the claim reaches flume only as words in a brief. Asked again with the
+ways it could travel, the user took a field of the launch.
+
+- **`claims-travel-in-the-launch`** (requirement, profile). A launch
+  may name the claims its work serves, each at its version; flume puts
+  `Claim: <name>@<version>` on every commit the place lands; millpond's
+  send fills it from the backlog entry. boom is unchanged by it: a
+  landing citing a claim makes its cell due, and the judge clears the
+  entry. Rules out: the citation resting on an agent copying a line from
+  a brief; boom reading flume's or millpond's files. Not ruled out: an
+  agent citing a claim on its own; any other launcher doing the same.
+  Source: the user, 2026-11-01. This needs a launch field in flume's
+  statement and millpond's send filling it, which are their own changes.
+
+**How does each caller know the boom it calls answers as it expects?**
+The user: pin and refuse.
+
+- **`callers-pin-boom`** (rule, across the family). A tool that calls
+  boom pins boom's release where it pins its other tools (core.6, across
+  tools) and refuses, naming both, an answer whose format major it was
+  not built for. Rules out: a caller running whatever boom is on the
+  path; a caller reading a newer major as if it were its own. Not ruled
+  out: a caller accepting fields it does not know within its major.
+  Source: the user, 2026-11-01.
+
+### Open
+
+- **`open-after-landing-step`**. sluice's statement reports work after a
+  landing (a release, a notification) apart from the outcome (122), but
+  names no general step that runs a repository's command after a
+  landing; whether sluice offers one, or a host's watcher runs boom on
+  each landing it sees, is sluice's to settle.
 
 ## Importing existing decision records
 
