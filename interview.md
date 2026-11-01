@@ -180,7 +180,7 @@ the import topic.
 
 **Where does a ledger live, and where may an event be written?** The
 user: "As long as this is grounded in the storage rules we established
-for the [family's] tools, I believe. This is under [a private
+for the flywheel tools, I believe. This is under [a private
 repository's] design I think." boom was then set against that
 convention, and the user kept it.
 
@@ -807,7 +807,65 @@ boom keeps it, the legacy numbers kept, and the rewording of
 
 ## What stays out of this repository
 
-Not yet asked.
+These are rules for this repository, the public one that holds boom,
+and not rules boom applies to the repositories it describes.
+
+### What the material settles
+
+- core.4: "Nothing commercial, no pricing, tier, customer or hosted
+  service, appears in this repository." The change's brief kept out
+  more: a hosted service, the cloud, the paid product and its planning,
+  pricing, tiers, an audit business and the family's umbrella name.
+- The change's design cites the private sources by date and words
+  ("the design session of 2026-10-31", "decision 40 of the design's
+  log"), never by a path, and adds no word list to the tree, since one
+  would name what it forbids.
+
+### Asked
+
+The first questions were too terse; the user asked whether they were
+about the repository holding boom or about boom's rules for other
+repositories, and they were put again with their context: all four are
+about this repository.
+
+**Should core.4 name, by kind, everything the brief kept out?** The
+user: "Maybe a little but no. It's dumb not to mention the umbrella name
+or paid product names, like we're going to have this site as part of
+the whole family. The things that should be kept out would be strategy
+for paid tiers or how things we do in Boom might limit or get people to
+a paid product."
+
+- **`core.no-commercial-strategy`** (rule, for `core.md`, rewording
+  core.4). No commercial strategy appears in this repository: no
+  pricing, no plan for a paid tier, no customer, and nothing saying how
+  boom's design limits what it does alone or leads its users to a paid
+  product. The family's umbrella name and its products, paid ones among
+  them, may be named, since the site is part of the family's. Rules
+  out: a tier's price or what a tier holds; a design choice explained by
+  what it sells; a customer named. Not ruled out: naming the umbrella or
+  a paid product; saying that a paid product works with boom by boom's
+  command line, as any caller does. Source: the user, 2026-11-01; record
+  0001. Core.4 keeps its id as a legacy alias.
+
+**How may a record, the statement or a page cite a private source?** The
+user: "fine", to citing by date and words.
+
+- **`core.private-sources-by-words`** (rule, for `core.md`). A source
+  kept in a private repository is cited by its date and its words, and
+  any number it gives, never by a path, a repository's name or a link a
+  reader cannot open. Rules out: `~/Code/...` or a private repository's
+  name in a record, a page or a commit; a link a reader cannot open. Not
+  ruled out: "the design session of 2026-10-31"; a public repository's
+  path and clause, such as sluice's statement, 122. Source: the user,
+  2026-11-01.
+
+**Should the gate check any of this?** The user: "we don't need a check
+yet." Review holds `core.no-commercial-strategy` and
+`core.private-sources-by-words` for now.
+
+**This branch's earlier commits held a private repository's path; if
+the notes land, how?** The user: "i'm not worried." Nothing is done to
+the branch's history.
 
 ## What the change must take in
 
