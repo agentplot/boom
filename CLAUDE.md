@@ -25,15 +25,16 @@ branch requires:
 
 | layer | what | who requires it |
 |---|---|---|
-| `check-fast` | the crate's format (rustfmt), lint (clippy -D warnings), type check and tests; the root's format (treefmt), toolchain, records, specs and open changes | main |
+| `check-fast` | the crate's format (rustfmt), lint (clippy -D warnings), type check and tests; the site's format and lint (Biome), type check (astro check), diagrams, prose (Vale) and build; the root's format (treefmt), toolchain, records, specs and open changes | main |
 
 Run suites through sluice, so the agents on this host take turns under
 its bound: once your work is committed, `sluice exec main` for the
 gate's checks, and while iterating `sluice exec main -- moon run
 <project>:<task>`. The projects are those `.moon/workspace.yml` lists:
-`boom` (`crates/boom`) and `root`. A quick, narrow call, `cargo
-check` or one unit test, is fine to run directly. `devenv shell -- moon
-run :#check-fast` runs the fast layer.
+`boom` (`crates/boom`), `site` (`site/`, its own `README.md`) and
+`root`. A quick, narrow call, `cargo check` or one unit test, is fine to
+run directly. `devenv shell -- moon run :#check-fast` runs the fast
+layer.
 
 ## Commits
 
