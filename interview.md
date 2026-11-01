@@ -58,15 +58,18 @@ well-designed boom must make that impossible."
   a statement, code or a commit, cites a record by its name (a claim at
   a version as `<name>@<version>`), never by a sequence number. Source:
   the user, 2026-11-01, (2).
-- **`ordinal-derived-on-render`** (requirement). A number a reader sees,
-  a decision record's 0007 or a clause's 12, is a display ordinal
-  computed when a view is rendered, from the order of acceptance on the
-  default branch; it is never written into a filename, a citation or a
-  record, so a landing beside another renumbers nothing. Source: the
-  user, 2026-11-01, (3).
+- **`number-given-at-acceptance`** (requirement). A number a reader
+  sees, a decision record's 0007 or a clause's 12, is given from the
+  order of first acceptance on the ledger's one-line history, never
+  taken on a branch, never changed once given, and never used as an id
+  or in a citation, so a landing beside another renumbers nothing. boom
+  writes a decision record's file as `NNNN-<name>.md`, MADR's naming,
+  with the number it gave (`decision-files-numbered-at-acceptance`).
+  Source: the user, 2026-11-01, (3), and the import topic below.
 - **`legacy-number-alias`** (requirement). A decision record imported
-  from another tool keeps its old number as an alias, cited only as
-  legacy. Source: the user, 2026-11-01, (3).
+  from another tool keeps its old number, cited only as legacy
+  (`legacy-numbers-kept-count-goes-on`). Source: the user, 2026-11-01,
+  (3), and the import topic below.
 - **`boom-follows-its-own-scheme`** (rule). boom's own statement, rules
   and records follow the same scheme, or say plainly where they cannot
   yet and why; `core.md` gains a rule that holds it, with the
@@ -105,14 +108,14 @@ the version that stands.
 **Is an ordinal counted per kind across the ledger, or per view?** The
 user: per kind, across the ledger.
 
-- **`ordinal-per-kind-ledger-wide`** (requirement). A record's display
-  ordinal is its place among the records of its kind, by first
-  acceptance on the ledger's default branch, and it never changes once
-  given. Rules out: an ordinal that shifts when a claim is re-attached
-  or a view is filtered; an ordinal for a proposed or rejected record; a
-  superseded record losing its ordinal; an amendment taking a new one.
-  Not ruled out: gaps in a view of one scope; a view that shows no
-  ordinal. Source: the user, 2026-11-01.
+- **`ordinal-per-kind-ledger-wide`** (requirement). A record's number is
+  its place among the records of its kind, by first acceptance on the
+  ledger's branch, counted on from the highest number the ledger holds,
+  and it never changes once given. Rules out: a number that shifts when
+  a claim is re-attached or a view is filtered; a number for a proposed
+  or rejected record; a superseded record losing its number; an
+  amendment taking a new one. Not ruled out: gaps in a view of one
+  scope; a view that shows no number. Source: the user, 2026-11-01.
 
 **What does boom's own repository do now, before boom can manage it?**
 The user: names everywhere, now.
@@ -126,26 +129,33 @@ The user: names everywhere, now.
   five-records)`. The site shows ordinals ("Record 0002", "Clause 12")
   computed at build from the order each landed on main. A check in
   `check-fast`, run on the candidate, fails when two records, two rules
-  or two items of the statement share a name. Record 0001 and core.1 to
-  core.6 keep their ids as legacy aliases, cited only as legacy. Rules
-  out: a number in a filename, a frontmatter field, an id or a
-  citation; a check that holds records to unique numbers. Source: the
-  user, 2026-11-01.
+  or two items of the statement share a name. Record 0001 keeps its file
+  and core.1 to core.6 their ids, as legacy aliases cited only as
+  legacy. Once boom keeps these records, it writes them as any project's
+  (`decision-files-numbered-at-acceptance`). Rules out: the `adrs`
+  command line's next number taken on a branch; a number in a new
+  record's filename, a frontmatter field, an id or a citation while
+  records are still made on branches; a check that holds records to
+  unique numbers. Source: the user, 2026-11-01, here and in the import
+  topic.
 
-**The rule for `core.md`.** The user kept it as proposed.
+**The rule for `core.md`.** The user kept it, in the wording settled with
+the import topic.
 
 - **`core.names-not-numbers`** (rule, for `core.md`). A record, a rule,
   a clause, an invariant or a scenario is identified by a name fixed
   when it is written and unique in its repository, and every citation
-  names it; a number is shown only as an ordinal computed from the
-  order things landed on main, never written into a filename, an id, a
-  field or a citation. Rules out: a branch's records numbered "after the
-  last" and renumbered when main moves, as another repository's
-  interview renumbered 22 records and 75 rules twice, rewriting every
-  citation; a filename `0007-<title>.md`; `core.12` as a new rule's id; a
-  check that holds records to unique numbers. Not ruled out: record 0001
-  and core.1 to core.6, cited only as legacy; an ordinal shown on a page
-  or in a heading. Source: the user, 2026-11-01.
+  names it; a number is given only from the order things were accepted
+  or landed on a line never rewritten, never taken on a branch, never
+  changed once given, and never used as an id or a citation. Rules out:
+  a branch's records numbered "after the last" and renumbered when main
+  moves, as another repository's interview renumbered 22 records and 75
+  rules twice, rewriting every citation; the `adrs` command line's next
+  number taken on a branch; `core.12` as a new rule's id; a citation by
+  number. Not ruled out: record 0001 and core.1 to core.6, cited only as
+  legacy; a number on a page, computed from main's order; boom writing
+  `0007-<name>.md` with the number it gave at acceptance. Source: the
+  user, 2026-11-01.
 
 ## The ledger's storage and merge behaviour
 
@@ -711,7 +721,88 @@ The user: pin and refuse.
 
 ## Importing existing decision records
 
-Not yet asked.
+### What the material settles
+
+- **`import-once`** (requirement). `boom import adr <dir>` reads a
+  folder of MADR files once: each file's title becomes a decision's
+  statement, its sections the body, its status and date its history,
+  and a "superseded by" link a supersession; afterwards boom writes the
+  records and the old tool writes none. Source: decision 33 of the
+  design's log; the site's import walkthrough.
+- **`import-names-from-files`** (requirement). An imported decision's
+  name is its file's title part (`amounts-as-floats` from
+  `0002-amounts-as-floats.md`), held to `one-name-space`: an import that
+  would bring a name the ledger already holds is refused, naming it, for
+  the importer to name it otherwise. Source: `one-name-space`.
+
+### Asked
+
+**Whose accept does an import record?** The user: the import proposes,
+and a person accepts.
+
+- **`import-proposes-a-person-accepts`** (requirement). An import
+  proposes and accepts nothing. Each imported decision is proposed with
+  the file's own status, date, deciders and path as its provenance, and
+  stands only by a person's signed accept under
+  `accept-by-role-never-agent-never-author`; one command may accept the
+  batch, one signed event each. A file the old tool marked superseded
+  comes in as history only, named by its successor, and never stands.
+  Rules out: an unsigned accept written by the import; the importer
+  accepting what they imported. Not ruled out: an agent running the
+  import for a person to accept. Source: the user, 2026-11-01. This
+  settles the change's question of whose accept an import records.
+
+**What scenario does an imported decision get?** The user: one drafted,
+and read on accept.
+
+- **`import-drafts-scenarios`** (requirement). An imported decision is
+  proposed with at least one scenario an agent drafted from its outcome
+  and consequences, marked as drafted at import; the person who accepts
+  it reads it with the rest. Rules out: a claim with no scenario; an
+  exception in the status function for imports. Not ruled out: a person
+  rewriting the scenario later, as an amendment; a superseded file,
+  history only, with none. Source: the user, 2026-11-01. This settles the
+  change's question of an imported decision's scenario.
+
+**What are decision records' files called?** Asked first about the
+legacy files, the user said: "I thought the numbering was part of how
+MADR did it." Asked again with MADR's naming laid out, the user said:
+"I'm confused. I thought an ADR was supposed to have a number because
+we're creating them with the CLI tool now and they're all getting
+numbered." The words the change was sent back with were quoted back:
+"(3) any number a reader sees (an ADR's 0007, a clause's 12) is a
+display ordinal derived on render from the order of acceptance on the
+default branch, never written into a filename, a citation or a record,
+so a landing beside another never renumbers anything". The collision
+comes from a number taken on a branch, as the `adrs` command line takes
+the next one, and boom, which gives a number at acceptance on a line
+never rewritten, need not take one there. Asked again on that footing,
+the user took numbered files for boom, names in this repository until
+boom keeps it, the legacy numbers kept, and the rewording of
+`core.names-not-numbers` above.
+
+- **`decision-files-numbered-at-acceptance`** (requirement). A decision's
+  number is given when it is first accepted, from the ledger's one-line
+  history, and never changes; `boom sync` writes the decision as
+  `NNNN-<name>.md`, MADR's naming, with MADR's frontmatter and sections;
+  citations name the record (`money-has-currency`), never its number.
+  Rules out: a number taken on a branch, "next after the last"; a number
+  changed once given; a citation by number. Not ruled out: the number
+  shown in views and on pages. Source: the user, 2026-11-01.
+- **`legacy-numbers-kept-count-goes-on`** (requirement). An imported
+  decision keeps its old number as its number, and its file its name;
+  boom's count goes on from the highest number the ledger holds, so in
+  the usual case of one repository imported, 0001 to 0004 keep theirs
+  and the next decision accepted is 0005. An import whose old numbers
+  the ledger has already given is refused, naming them, unless the
+  importer has them numbered on from the count, their old numbers kept
+  as aliases. Rules out: two decisions with one number in a ledger; an
+  imported number silently changed; a number taken on a branch. Not
+  ruled out: citing a legacy number, as legacy. Source: the user,
+  2026-11-01.
+- This repository, meanwhile: names now and numbers on the site, as
+  `boom-names-everything-now` has it, record 0001 keeping its file. The
+  user, 2026-11-01.
 
 ## What stays out of this repository
 
