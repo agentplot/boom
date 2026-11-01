@@ -370,14 +370,15 @@ cannot be reached, as in a gate that allows only localhost?** The user:
 an agent program's command, and not run when unreachable.
 
 - **`reviewer-is-an-agent-command`** (requirement). The reviewer and the
-  judge are an agent program's command that the repository's
-  `.config/boom.toml` names, with its exact model, given the closed
-  inputs on standard input and answering JSON on standard output; the
-  model is an input of the check, so a new model runs the check again.
-  boom holds no model credential (core.3). Rules out: a model key read
-  or stored by boom; "latest" or an unpinned model name. Not ruled out:
-  different programs for the judge and the reviewer. Source: the user,
-  2026-11-01.
+  judge are an agent program's command, with its exact model, named in
+  the ledger's settings (`ledger-settings-owner-signed`) and carried
+  into each repository by its slice; each is given the closed inputs on
+  standard input and answers JSON on standard output. The model is an
+  input of the check, so a new model runs the check again. boom holds no
+  model credential (core.3). Rules out: a model key read or stored by
+  boom; "latest" or an unpinned model name; a change choosing its own
+  reviewer. Not ruled out: different programs for the judge and the
+  reviewer. Source: the user, 2026-11-01.
 - **`unreached-is-not-run`** (requirement). A claim the check could not
   have reviewed, its reviewer unreachable, has no outcome: `boom check`
   exits the not-run code the gate's policy names (sluice 114), so the
@@ -422,7 +423,88 @@ The user: only what the ledger gives.
 
 ## Reconciliation across repositories
 
-Not yet asked.
+### What the material settles
+
+From decision 40, the change's records on reconciling and on scope, and
+rulings Q1, Q3 and Q6:
+
+- **`judged-per-repository-at-its-head`** (requirement). boom
+  reconciles and judges one repository at its shared head, on a host
+  where it is checked out, with no other service; a landing that cites a
+  claim makes its cell due; a repository first homed is judged once, as
+  a baseline.
+- **`repeat-writes-nothing`** (requirement). `boom reconcile` and `boom
+  judge` each ask the status first, so either, run again with nothing
+  changed, writes nothing, and any trigger may run them.
+- **`scope-crosses-by-homes`** (requirement). A claim reaches a
+  repository only through the homes of what it attaches to: a
+  relationship's claim has a cell in each end's repository, a system
+  claim one in every repository the map homes anything in, each with
+  its own verdict.
+
+### Asked
+
+**Where do the ledger's settings live: the repositories it describes,
+each one's remote and planner, and the reviewer and judge?** Asked once
+it was seen that a change could swap its own reviewer were it set in the
+repository's tree. The user: in the ledger, signed by an owner.
+
+- **`ledger-settings-owner-signed`** (requirement). The repositories a
+  ledger describes, each one's remote and planner, and the reviewer's
+  and the judge's commands and models are ledger settings, changed only
+  by an event an owner signs. The check takes its reviewer from the
+  slice, which only the ledger gives (`slice-only-as-the-ledger-gives`);
+  a repository's `.config/boom.toml` names its ledger and nothing the
+  check trusts. Rules out: a change that edits its own reviewer; an
+  agent setting a repository's planner; a settings file on the ledger's
+  branch edited by hand. Not ruled out: where a repository is checked
+  out, in each host's own settings (`boom-state-by-layer`). Source: the
+  user, 2026-11-01.
+
+**Two hosts both judge the same cell: what keeps the ledger right?** The
+user: the check at the tip, with no lease.
+
+- **`no-lease-recheck-at-the-tip`** (requirement). boom holds no lease
+  or claim on a cell; every verdict and due event is checked again
+  against the status at the tip it is applied to, and one for a cell no
+  longer to judge is dropped and reported, never appended. A second
+  model session spent on a cell another host judged first is the
+  accepted cost. Rules out: two verdicts on one cell for one cause; a
+  lock or lease file on the ledger's branch; a host waiting on another.
+  Not ruled out: a trigger arranged so one host judges a repository.
+  Source: the user, 2026-11-01.
+
+**How does `boom sync` hand a repository its files?** The user: a forge
+pull request, with the note "We just need to make sure this is
+compatible with how we use sluice. I believe that in a default sluice
+setup, the pull request would automatically get merged by sluice
+anyway." It is: sluice's pull-request profile finds a request it did
+not open as one opened by hand, submits it once it is out of draft and
+the branch's conditions hold, and lands it; a new head withdraws the
+entry and the request waits for its conditions on that head (sluice,
+the pull-request row of its Part C, 118, 120, 136). With `reviews = 0`,
+a sync request lands once the gate passes.
+
+- **`sync-by-one-pull-request`** (requirement). `boom sync` writes a
+  repository's files only on its own branch there, `boom/sync`, as one
+  commit from the ledger, and opens or updates one pull request for it
+  through the forge's own command line, marked ready, never a draft, so
+  a merge path that takes pull requests lands it as it lands any other;
+  with output unchanged it pushes nothing and leaves the request alone.
+  boom never merges it itself. Rules out: boom pushing to a repository's
+  main; boom running sluice, flume or millpond; a second sync request
+  open at once. Not ruled out: the repository's gate checking it like
+  any change; sluice landing it under its pull-request profile; a branch
+  only, where the forge has no pull requests. Source: the user,
+  2026-11-01; sluice's statement.
+
+### Open
+
+- **`open-sync-without-pull-requests`**. Where a repository's merge path
+  takes no pull requests (sluice landing a branch from local or pushed
+  refs), the sync branch waits for whoever lands work there to submit
+  it, since boom runs no other tool. Whether that is enough, or such a
+  repository needs a planner or a hook to submit it, is not settled.
 
 ## The command line, its JSON and its exit codes
 
