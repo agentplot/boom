@@ -167,8 +167,8 @@ the import topic.
   it owns its history).
 - Order is the ledger's history, one line, and no status depends on a
   clock (the change's record on events, ruling Q2).
-- The family's storage convention (flywheel-next,
-  `design/storage/storage.md`): five layers (host, worktree, clone,
+- The family's storage convention, kept in a private repository and
+  cited here by its words alone (core.4): five layers (host, worktree, clone,
   shared branch, content), a piece of state in the lowest layer that
   holds every reader it has; one protocol for writing a shared branch
   (its 5.2); recutils at rest on a shared branch, each record naming
@@ -180,8 +180,9 @@ the import topic.
 
 **Where does a ledger live, and where may an event be written?** The
 user: "As long as this is grounded in the storage rules we established
-for the flywheel tools, I believe. This is under Flywheel Next design I
-think." boom was then set against that convention, and the user kept it.
+for the [family's] tools, I believe. This is under [a private
+repository's] design I think." boom was then set against that
+convention, and the user kept it.
 
 - **`ledger-on-a-shared-branch`** (requirement). A ledger is layer 4 of
   the family's storage convention: a branch the operator names, in a
