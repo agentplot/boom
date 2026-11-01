@@ -1,7 +1,7 @@
 $schema: 'https://moonrepo.dev/schemas/project.json'
 
 # The binary, boom. Each check is one task, in the fast layer
-# (core.7).
+# (core.5).
 language: 'rust'
 layer: 'application'
 

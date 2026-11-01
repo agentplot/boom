@@ -8,3 +8,9 @@ devenv.local.nix
 
 # cargo's build directory
 /target
+
+# The site's dependencies, build and screenshots (site/README.md)
+/site/node_modules/
+/site/dist/
+/site/.astro/
+/site/shots/

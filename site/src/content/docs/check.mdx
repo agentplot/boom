@@ -1,0 +1,102 @@
+---
+title: boom check
+description: How boom check reads a change against the standing claims it touches, in three layers, cheapest first, and what a violated, a superseded and an unclear claim lead to.
+---
+
+import Diagram from '../../components/Diagram.astro';
+
+`boom check` asks one question of a change: does it move the code away
+from a claim that stands? It reads the change, a diff against a base or
+a diff file, and returns one outcome for each claim the change touches:
+**holds**, **violated** or **unclear**, each with a few words saying why.
+An agent runs it before it hands work off, and a merge gate runs it
+beside the tests.
+
+<Diagram name="check" caption="A change to src/refunds and src/billing. Scope narrows twelve standing claims to three; a rule settles one, violated; a reviewer reads the other two against the diff, and both hold. The violation blocks the merge." />
+
+## Three layers, cheapest first
+
+1. **Scope.** boom maps each changed file to the contexts homed there
+   and keeps the standing claims attached to them, with the claims
+   attached to the whole system. It is fast and gives the same answer
+   every time, and no other claim reaches the next two layers.
+2. **Rules.** A claim may carry a check rule: a dependency rule, a lint
+   rule or an architecture test. boom runs it, and it passes or fails
+   with no judgment. The context map gives one rule for nothing: a new
+   dependency between two contexts that no relationship allows fails.
+   So does a `Claim:` marker in the change that names no standing claim.
+   A claim its rule settles goes no further.
+3. **Prose.** A reviewer model gets the diff and the claims still to
+   settle, and nothing else. For each claim it returns `holds`,
+   `violated` or `unclear`, with a few words.
+
+A prose claim checked often is a candidate for a rule, which is cheaper
+and surer. Adding a rule changes how a claim is checked and never what
+it says, so the claim's version stays the same.
+
+## What it reads
+
+In a merge gate, `boom check` reads its claims from the repository's
+slice, `.boom/slice.rec`, which `boom sync` writes: the standing claims
+in scope, with their versions, their check rules and the evidence paths
+of their verdicts. Everything the check reads is then in the change's
+own tree. A gate that caches a check on its inputs replays the outcome
+for a change whose inputs did not move, rather than ask a model again.
+A claim accepted today is checked in a repository once its sync lands
+there.
+
+## It blocks regressions, never the backlog
+
+`boom check` asks whether this change moves away from a claim, never
+whether the repository satisfies the claim yet. A claim the code does
+not satisfy yet is planned work, and a change that leaves it alone
+holds it. Otherwise every merge would wait on every claim nobody has
+built yet.
+
+## What each outcome leads to
+
+| Outcome | In the gate | What follows |
+|---|---|---|
+| holds | passes | Nothing. |
+| violated | fails, and the merge is blocked | The agent fixes the code. Or it proposes a new version of the claim, or a claim to replace it, and that proposal waits on a person. An agent cannot rewrite a claim to get its own change through. |
+| unclear | fails, as unclear | A person reads the change and answers for this change alone, `holds` or `violated`, with `boom check --answer`. The answer settles the gate and records no verdict. |
+
+```console
+$ boom check --base main
+2 standing claims in scope of 2 changed files
+  invoices-final       unclear  the diff moves invoice totals into a cache; whether a cached total can change is not shown
+  money-has-currency   holds    every new amount is a Money
+unclear: 1 claim. A person answers: boom check --answer invoices-final holds|violated --reason "…"
+
+$ boom check --answer invoices-final holds --reason "The cache is rebuilt from the issued invoice; it never writes back."
+answered invoices-final for this change: holds
+```
+
+[A change breaks a claim](/boom/guides/a-change-breaks-a-claim/) walks
+through a violation from the agent's run to the merge.
+
+## A check is not a verdict
+
+A check judges one change. A [verdict](/boom/how-its-used/#verdicts-where-a-repository-stands)
+judges a repository at a revision. A check that holds writes no
+verdict, and a violated check moves none, since its change never landed.
+After a change lands, `boom reconcile` writes what the landing did to
+the ledger: evidence gone, or a claim cited.
+
+## In a merge gate
+
+`boom check` is one more check, run the way a gate runs the others. With
+moon, it is a task tagged with a layer the branch requires:
+
+```yaml
+# moon.yml
+tasks:
+  claims:
+    command: 'boom check --base main'
+    inputs: ['/**/*', '/.boom/slice.rec']
+    tags: [check-fast]
+```
+
+sluice calls the result of all of a change's checks its verdict, and in
+it `boom check` is one row, pass or fail. boom keeps the word verdict for
+the ledger and calls its own result a check.

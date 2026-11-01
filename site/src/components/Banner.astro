@@ -1,0 +1,48 @@
+---
+// Starlight's banner, boom's own: every page opens with the same line, that
+// boom is designed and not built, so no page reads as a manual for a tool
+// that runs. The family's banner says so only for a tool its list names, and
+// it names no boom yet. It also sets the page's accent, as the family bar
+// does for a tool it names.
+import { pairCss } from "@agentplot/site-theme/family";
+import { accent } from "../accent";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<div class="bm-status" data-pagefind-ignore>
+  <p>
+    boom is designed, not built: this page shows what it will do, and nothing on it runs yet. What
+    the design has still to settle is on the <a href={`${base}/roadmap/#open-questions`}>roadmap</a>.
+  </p>
+</div>
+<Fragment set:html={`<style>${pairCss("--ap-accent", accent)}</style>`} />
+
+<style>
+  /* Above the page's title, in line with its text, on a splash page as on
+     any other: the content column's width and margins, as the family's
+     banner takes them. */
+  .bm-status {
+    padding: 1.5rem var(--sl-content-pad-x) 0;
+  }
+  p {
+    max-width: var(--sl-content-width);
+    margin: 0;
+    padding: 0.6rem 0.9rem;
+    border-left: 3px solid var(--ap-accent);
+    border-radius: 0 var(--ap-radius-sm) var(--ap-radius-sm) 0;
+    background: color-mix(in oklab, var(--ap-accent) 12%, transparent);
+    color: var(--ap-fg-2);
+    font-size: var(--sl-text-sm);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  a {
+    color: var(--sl-color-text-accent);
+  }
+  @media (min-width: 72rem) {
+    p {
+      margin-inline: var(--sl-content-margin-inline, auto);
+    }
+  }
+</style>

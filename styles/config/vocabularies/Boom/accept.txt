@@ -1,0 +1,12 @@
+boom
+sluice
+flume
+millpond
+herdr
+mdBook
+recutils
+[Rr]ecfiles?
+MADR
+ADRs?
+[Ww]orktrees?
+[Ll]edger

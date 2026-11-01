@@ -2,7 +2,7 @@
 name = "boom"
 version.workspace = true
 edition.workspace = true
-description = "The runner on each host: keeps the clones its configuration names and carries the control plane's work into flume launches."
+description = "A ledger of what a project has claimed about itself, with every view of it computed and a check that reads the work against the claims that stand."
 publish = false
 
 [[bin]]

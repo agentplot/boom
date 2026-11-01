@@ -1,0 +1,58 @@
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+# The site, Astro with Starlight, published by .github/workflows/pages.yml.
+# Each check is one task, in the fast layer (core.5): its sources' format
+# and lint by Biome, by the settings in /biome.json; its types, the .astro
+# components' among them, by astro check; its diagrams by
+# scripts/diagrams.ts; its prose by Vale; and its build, which fails on a
+# broken internal link.
+language: 'typescript'
+layer: 'application'
+
+tasks:
+  format:
+    command: 'biome format .'
+    inputs: ['**/*', '!node_modules/**/*', '!dist/**/*', '!.astro/**/*', '!shots/**/*', '/biome.json', '/devenv.nix', '/devenv.lock']
+    tags: [check-fast]
+  lint:
+    command: 'biome lint .'
+    inputs: ['**/*', '!node_modules/**/*', '!dist/**/*', '!.astro/**/*', '!shots/**/*', '/biome.json', '/devenv.nix', '/devenv.lock']
+    tags: [check-fast]
+  # astro's bin starts `#!/usr/bin/env node`, and the devenv holds no node:
+  # `bun run` would stand in a `node` of bun's own written under /tmp, which
+  # the gate's sandbox does not let it write, so bun runs astro's bin
+  # itself. astro keeps its telemetry setting in the user's home, which a
+  # gate's sandbox may not let it write: with telemetry off it reads nothing
+  # there.
+  typecheck:
+    command: 'bun ./node_modules/astro/bin/astro.mjs check'
+    env:
+      ASTRO_TELEMETRY_DISABLED: '1'
+    inputs: ['src/**/*', 'scripts/**/*', 'astro.config.mjs', 'package.json', 'bun.lock', 'tsconfig.json', '/devenv.nix', '/devenv.lock']
+    deps: ['~:install']
+    tags: [check-fast]
+  # Every diagram drawn in both layouts holds together, and the README's
+  # copy of the start page's is the one the site draws now.
+  test:
+    command: 'bun scripts/diagrams.ts --check'
+    inputs: ['src/diagrams/**/*', 'src/accent.ts', 'scripts/diagrams.ts', 'package.json', 'bun.lock', '/docs/diagrams/boom.svg', '/devenv.nix', '/devenv.lock']
+    deps: ['~:install']
+    tags: [check-fast]
+  prose:
+    command: 'vale src/content/docs'
+    inputs: ['src/content/docs/**/*', '/.vale.ini', '/styles/**/*', '/devenv.nix', '/devenv.lock']
+    tags: [check-fast]
+  build:
+    command: 'bun ./node_modules/astro/bin/astro.mjs build'
+    env:
+      ASTRO_TELEMETRY_DISABLED: '1'
+    inputs: ['src/**/*', 'public/**/*', 'astro.config.mjs', 'package.json', 'bun.lock', 'tsconfig.json', '/devenv.nix', '/devenv.lock']
+    outputs: ['dist']
+    deps: ['~:install']
+    tags: [check-fast]
+  # No layer: it checks nothing, and the tasks that need the packages run
+  # it first.
+  install:
+    command: 'bun install --frozen-lockfile'
+    inputs: ['package.json', 'bun.lock', '/devenv.nix', '/devenv.lock']
+    options: {cache: false}

@@ -75,17 +75,59 @@ let
     }
   );
 
+  # Vale checks the site's prose (.vale.ini, styles/Boom). From its own
+  # release: nixpkgs trails it. Bump the version and the four hashes from
+  # the release's checksums file.
+  valeVersion = "3.24.0";
+  valeAssets = {
+    aarch64-darwin = {
+      os = "macOS_arm64";
+      sha256 = "87b513f26499f6657c15cf7175ba5b058a7c1ff2bb2d4e07265db2dd43451e44";
+    };
+    x86_64-darwin = {
+      os = "macOS_64-bit";
+      sha256 = "eeb39e86f1daac27cc2a77fef3af1824d50559bdc22329fb25fb921c80c79472";
+    };
+    aarch64-linux = {
+      os = "Linux_arm64";
+      sha256 = "104cbd349279e50c4cb40adb70adf345d93cc4a3a0191f9e68bdccb97086b582";
+    };
+    x86_64-linux = {
+      os = "Linux_64-bit";
+      sha256 = "867534ddb678abca7f214bc4706ead0922bd5252ffe8035fc227013f66c8b214";
+    };
+  };
+  valeAsset = valeAssets.${pkgs.stdenv.hostPlatform.system};
+  vale = pkgs.stdenvNoCC.mkDerivation {
+    pname = "vale";
+    version = valeVersion;
+    src = pkgs.fetchurl {
+      url = "https://github.com/errata-ai/vale/releases/download/v${valeVersion}/vale_${valeVersion}_${valeAsset.os}.tar.gz";
+      inherit (valeAsset) sha256;
+    };
+    sourceRoot = ".";
+    installPhase = "install -Dm755 vale $out/bin/vale";
+  };
+
 in
 {
   # The system tools are this file's, pinned by devenv.lock; moon and Rust
   # are .prototools', installed by the boom:proto:install task on
-  # entering the shell and activated by enterShell. OpenSpec is the release
-  # pinned above, never the host's (core.8).
+  # entering the shell and activated by enterShell. OpenSpec and Vale are
+  # the releases pinned above, never the host's (core.6). The site's tools
+  # are bun and Biome, which treefmt runs too, and Playwright with the one
+  # browser it drives, for the site's screenshots (site/scripts/shots.mjs).
   packages = [
     pkgs.git
     proto
     openspec
+    vale
+    pkgs.bun
+    pkgs.biome
+    pkgs.playwright-test
   ];
+
+  env.PLAYWRIGHT_BROWSERS_PATH = "${pkgs.playwright-driver.browsers-chromium}";
 
   # moon's task archives (.moon/cache/outputs) are a link into the git common
   # dir, so every worktree shares them. The rest of .moon/cache records the
@@ -144,5 +186,30 @@ in
   treefmt.config = {
     imports = [ ./treefmt.nix ];
     projectRootFile = "devenv.nix";
+  };
+
+  scripts.prose = {
+    description = "The site's prose and the README, checked by Vale (.vale.ini)";
+    exec = ''
+      set -euo pipefail
+      cd "$(git rev-parse --show-toplevel)"
+      vale site/src/content/docs README.md "$@"
+    '';
+  };
+  scripts.site-build = {
+    description = "The site, built into site/dist: moon run site:build";
+    exec = ''
+      set -euo pipefail
+      cd "$(git rev-parse --show-toplevel)"
+      moon run site:build "$@" </dev/null
+    '';
+  };
+  scripts.site-shots = {
+    description = "Screenshots of the built site at phone and desktop widths, in both themes";
+    exec = ''
+      set -euo pipefail
+      cd "$(git rev-parse --show-toplevel)/site"
+      bun scripts/shots.mjs "$@"
+    '';
   };
 }
