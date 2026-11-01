@@ -560,7 +560,74 @@ harmless?** The user: no prompts, and a repeat adds nothing.
 
 ## boom mcp and the Claude Code and herdr plugins
 
-Not yet asked.
+### What the material settles
+
+- **`mcp-is-the-commands`** (requirement). `boom mcp` is an MCP server
+  on standard input and output that an agent's harness starts; its
+  tools are boom's commands, each taking the command's arguments and
+  returning its `--json` object. Source: the design's surfaces; the
+  site's integrations page.
+- **`claude-code-plugin-three-moments`** (requirement). The Claude Code
+  plugin is `boom mcp` and the three moments an agent meets the ledger:
+  drawing out claims and narratives while it plans, at the destination's
+  grain (a claim survives a rewrite of the code, names what someone
+  could observe, can be judged from the repository alone, and never
+  names a file, a colour, a setting or a step of a pipeline); looking up
+  what applies before it edits; running `boom check` before it hands
+  off. Source: the same; the change's record on the records.
+
+### Asked
+
+**Does `boom mcp` leave out every act only a person may do, and does it
+serve judge, reconcile and sync?** The user: no person's act at all.
+
+- **`mcp-serves-no-persons-act`** (requirement). Each of `boom mcp`'s
+  tools is one of boom's commands, run by the same code and answering
+  the same JSON, and no tool exists without its command; no tool
+  performs an act that needs a person's signature. Served: propose,
+  supersede, annotate, challenge, query, check, backlog, render, judge,
+  reconcile, sync. Absent: accept, reject, `check --answer`, and every
+  owner's act. Rules out: a tool that sets off a person's key prompt for
+  an agent's call; logic in the MCP layer that its command lacks. Not
+  ruled out: a tool answering, as text, that a person must accept and
+  with which command. Source: the user, 2026-11-01.
+
+**Are the plugin's three moments skills or hooks?** The user: skills,
+and a hook before edits.
+
+- **`hook-before-each-edit`** (requirement). Before an agent edits a
+  file, the Claude Code plugin's hook gives it the standing claims whose
+  scope holds that file, by `boom query`, with no model; drawing out
+  claims and running `boom check` before hand-off are skills. Rules out:
+  an edit to a file in a claim's scope with no claim shown to the
+  agent; the hook calling a model or writing the ledger. Not ruled out:
+  the hook staying silent where no claim applies; flume also putting the
+  claims in the task at launch. Source: the user, 2026-11-01.
+
+**What does the herdr plugin show, and do its keys act?** The user: what
+waits on the person and what applies.
+
+- **`herdr-shows-what-waits-and-applies`** (requirement). The herdr
+  plugin shows, for each agent pane, the claims in scope of its last
+  edit and its last check's outcome, and for the workspace, the
+  proposals waiting on the person and the unclear checks to answer; its
+  one acting key opens the waiting list in the person's own pane, where
+  `boom accept` runs and the key's presence prompt signs it. It reads
+  boom only by `boom ... --json`. Rules out: a key that accepts from an
+  agent's pane; herdr reading the ledger's files. Not ruled out: an
+  agent seeing the same counts. Source: the user, 2026-11-01. This
+  settles the change's question of what the herdr plugin shows.
+
+**Where do the plugins live?** The user: in this repository.
+
+- **`plugins-in-this-repository`** (rule). The Claude Code plugin and
+  the herdr plugin live in this repository, each under `plugins/<name>`
+  as a moon project of its own with its language declared and a format,
+  lint, type check and test task each (core.5); each calls boom by its
+  command line or `boom mcp`, never its code, names the boom release it
+  needs and ships with that release. Rules out: a plugin with no project
+  of its own; a plugin linking boom's library. Not ruled out: a
+  marketplace entry that points here. Source: the user, 2026-11-01.
 
 ## sluice, flume and millpond, by boom's command line
 
