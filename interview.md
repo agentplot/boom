@@ -25,7 +25,8 @@ Each item is one of:
   construct wrote it (proposal, design, specs, tasks), and the words the
   user sent it back with on 2026-11-01.
 - The design notes that change was drawn from, kept in a private
-  repository and cited here only by date and words (core.4): the design
+  repository and cited here only by date and words
+  (`core.private-sources-by-words`): the design
   session of 2026-10-31 on claims, verdicts and reconciliation, its
   rulings (the status ruling, Q1 to Q6), and decisions 18 to 42 of the
   design's log.
@@ -168,8 +169,8 @@ the import topic.
 - Order is the ledger's history, one line, and no status depends on a
   clock (the change's record on events, ruling Q2).
 - The family's storage convention, kept in a private repository and
-  cited here by its words alone (core.4): five layers (host, worktree, clone,
-  shared branch, content), a piece of state in the lowest layer that
+  cited here by its words alone (`core.private-sources-by-words`): five
+  layers (host, worktree, clone, shared branch, content), a piece of state in the lowest layer that
   holds every reader it has; one protocol for writing a shared branch
   (its 5.2); recutils at rest on a shared branch, each record naming
   `format: <tool>-<record>/<n>`, JSON only in flight; a repository's
@@ -231,7 +232,7 @@ convention, and the user kept it.
   naming the commit. Rules out: a status read from an event boom would
   have refused to write; an agent's hand-written accept standing; an
   edited event read as its new text. Not ruled out: reading the files
-  with `recsel`, with no boom; a keeper reverting the bad commit.
+  with `recsel`, with no boom; an owner reverting the bad commit.
   Source: the user, 2026-11-01.
 
 **May boom keep an index or cache beside the ledger?** The user: derived
@@ -869,4 +870,150 @@ the branch's history.
 
 ## What the change must take in
 
-Written at the end of the interview.
+For the change `boom-is-designed-in-its-own-records`, so its construct
+can be run again with what this interview settled. Each line names the
+items above it rests on.
+
+### Its brief
+
+- Replace the brief's list of what to keep out (no hosted service,
+  cloud, paid product, umbrella name and so on) with
+  `core.no-commercial-strategy`: the umbrella name and the family's
+  products, paid ones among them, may be named; what stays out is
+  pricing, a paid tier's plan, customers, and anything saying how boom's
+  design limits what it does alone or leads its users to a paid
+  product. Private sources are cited by date and words
+  (`core.private-sources-by-words`), as the design already does.
+- "keeper" becomes "owner" in every file it writes (`owner-is-the-word`).
+
+### Names, not numbers, in this repository (its D1, D3, D4, D5 and both specs)
+
+- Records are `docs/adr/<name>.md`, each name short and kebab, chosen
+  when the record is written; the frontmatter names the record and
+  holds no number; a record cites another as `record <name>`; record
+  0001 keeps its file, cited only as legacy (`boom-names-everything-now`).
+- The statement's clauses, invariants and scenarios each open with a
+  name and are anchored by it; a citation names them, `(status-from-events,
+  record five-records)`; no number is written into the file.
+- New rules in `core.md` are `core.<name>`; core.1 to core.6 keep their
+  ids as legacy aliases.
+- `root:adrs` and `root:statement` hold names unique (two records, two
+  rules or two items of the statement under one name fail `check-fast`
+  on the candidate) and citations resolving to names; nothing holds a
+  number unique. The fixtures and the `design-statement` spec change to
+  match; records stop being made with the `adrs` command line's next
+  number.
+- The site shows numbers ("Record 0002", "Clause 12") computed at build
+  from the order each item landed on main, and anchors each item by its
+  name (`#status-from-events`); the `design-pages` spec changes to match.
+- `CLAUDE.md`'s line sending a rule to `core.md` "with an id, the next
+  free number in its area" sends it with a name.
+- `core.md` gains `core.names-not-numbers`, in the wording above, as the
+  send-back asked. `core.no-commercial-strategy` (rewording core.4),
+  `core.private-sources-by-words`, `plugins-in-this-repository` and
+  `callers-pin-boom` go to `core.md` with them, or in the separate step
+  that draws `core.md` from the records, as the user chooses.
+
+### The records it writes
+
+Changes to the nine it plans:
+
+- **The records** (its 0002): `one-name-space`; `identity-fixed-at-proposal`;
+  `ordinal-per-kind-ledger-wide` and `number-given-at-acceptance`.
+- **The events** (its 0003): `amend-names-its-base`;
+  `retire-attach-and-rules-need-a-person`, which settles withdrawing a
+  claim and moving an attachment, and adds a check rule's change to
+  what a person accepts; `validated-on-read`.
+- **Verdicts** (its 0004): `verdicts-beside-the-claims`, as a named
+  departure from the storage convention's rule 2.
+- **Reconciling and judging** (its 0005): `no-lease-recheck-at-the-tip`;
+  `reviewer-is-an-agent-command` for the judge;
+  `reconcile-and-judge-after-each-landing` as the family's profile.
+- **The check** (its 0006): `reviewer-is-an-agent-command`,
+  `unreached-is-not-run`, `answers-signed-in-the-tree`,
+  `slice-only-as-the-ledger-gives`.
+- **Who accepts** (its 0008): `persons-acts-signed-with-presence`,
+  `self-registered-first-owner`, `owner-is-the-word`,
+  `mcp-serves-no-persons-act` (every act needing a person's signature
+  absent, not only accept and reject).
+- **millpond** (its 0009) and **its planner setting** (its D8): the
+  planner is a ledger setting an owner signs
+  (`ledger-settings-owner-signed`), not a line of a `.config/boom.toml`;
+  `claims-travel-in-the-launch` in the loop's description.
+
+New records for decisions the nine do not hold, each accepted by the
+user on 2026-11-01:
+
+- **`names-not-numbers`**: identity and numbering, from the first topic
+  and the import topic.
+- **`the-ledger-on-a-shared-branch`**: `ledger-on-a-shared-branch`,
+  `ledger-written-by-the-family-protocol`, `records-name-their-format`,
+  `boom-state-by-layer`, `caches-derived-only`.
+- **`a-persons-act-is-signed`**: the proof, owners and the first owner,
+  and `ledger-settings-owner-signed`.
+- **`the-command-line-contract`**: `exit-codes`, `json-versioned-additive`,
+  `no-prompts-repeats-add-nothing`, `callers-pin-boom`.
+- **`the-surfaces`**: `mcp-serves-no-persons-act`, `hook-before-each-edit`,
+  `herdr-shows-what-waits-and-applies`, `plugins-in-this-repository`.
+- **`sync-by-one-pull-request`**, with sluice's pull-request profile.
+- **`import-proposes-for-a-person`**: `import-proposes-a-person-accepts`,
+  `import-drafts-scenarios`, `import-names-from-files`,
+  `decision-files-numbered-at-acceptance`,
+  `legacy-numbers-kept-count-goes-on`.
+- **`no-commercial-strategy-here`**: `core.no-commercial-strategy` and
+  `core.private-sources-by-words`.
+
+### The statement
+
+- Vocabulary: **owner** for the change's keeper; **operator** as the
+  family's word.
+- Part A gains a clause for each requirement above that is boom's own,
+  citing its record by name.
+- Part B: B.1 the store takes the shared-branch protocol's guarantee; B.5
+  the actor binds to `persons-acts-signed-with-presence`; B.6 and B.8
+  take `slice-only-as-the-ledger-gives` and `unreached-is-not-run`.
+- Part C: C.1 the store, the family's shared branch under `boom/`; C.4
+  the actor, a key registered to each person that signs with them
+  present, its format open; C.5 the gate, exit 3 as the policy's
+  not-run; C.6 reconcile and judge after each landing, and claims
+  travelling in the launch; C.8 the surfaces as `the-surfaces` has them.
+- Section 10 loses the questions this interview settled: where the
+  ledger lives for one repository (a branch of it); how boom tells a
+  person's act from an agent's; how a claim is withdrawn and an
+  attachment moved; which model judges and reviews (an owner's setting);
+  where an answer to an unclear check is kept; what keeps a change from
+  editing its slice; an imported decision's scenario and whose accept
+  an import records; what the herdr plugin shows. It keeps: the layout of
+  boom's files under `boom/`; `open-signature-format`;
+  `open-sync-without-pull-requests`; `open-after-landing-step`; whether
+  the map needs parts finer than a context; what a check rule looks
+  like; what a proposal spanning repositories with different planners
+  shows where; the name.
+
+### The site
+
+- **Commands**: exits 0 to 3; each `--json` answer naming its format, a
+  refusal as an object; `boom accept` signed with the person present;
+  `boom check --answer` writing a signed answer under `.boom/answers/`;
+  `boom mcp`'s tools as `mcp-serves-no-persons-act` lists them; `boom
+  sync` opening one ready pull request; `boom import adr` proposing, with
+  drafted scenarios and its numbers kept.
+- **Configuration**: the ledger as a branch under `boom/` with each
+  record naming its format; the ledger's settings (repositories,
+  remotes, planners, reviewer and judge) as owner-signed events, not a
+  `[repositories]` table; host settings under `$XDG_CONFIG_HOME/boom/`;
+  a repository's `.config/boom.toml` naming only its ledger.
+- **Integrations**: the hook before each edit; herdr's view and key;
+  reconcile and judge after each landing; claims in the launch.
+- **The import walkthrough**: the agent proposes the import, Ada
+  accepts, the scenarios drafted; 0001 to 0004 keep their numbers and
+  the next decision is 0005, written `0005-money-has-currency.md`.
+- **The roadmap**: section 10's questions as above.
+
+### Outside this change
+
+- flume: a launch field naming the claims its work serves, and the
+  `Claim:` trailer on the place's commits (`claims-travel-in-the-launch`).
+- millpond: its send filling that field from a backlog entry.
+- sluice: a step that runs a repository's command after each landing,
+  or a host's watcher doing it (`open-after-landing-step`).
