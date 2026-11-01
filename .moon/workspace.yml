@@ -1,5 +1,5 @@
 # moon runs boom's checks: one project per crate, holding its
-# own checks, and the root, holding what spans the tree (core.7). Each
+# own checks, and the root, holding what spans the tree (core.5). Each
 # check is tagged with its layer, which a branch's policy requires by tag
 # (.config/sluice.toml):
 #   check-fast    the crate's format, lint, type check and tests; the

@@ -1,5 +1,5 @@
 # boom's crates: the binary, for now. Each is a moon project of
-# its own (core.7).
+# its own (core.5).
 [workspace]
 resolver = "2"
 members = ["crates/boom"]

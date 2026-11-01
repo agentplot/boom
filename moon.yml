@@ -1,11 +1,11 @@
 $schema: 'https://moonrepo.dev/schemas/project.json'
 
 # The workspace as a whole: what spans the tree, each check one task
-# (core.7).
+# (core.5).
 tasks:
   # Every formatter treefmt.nix configures, writing nothing it would change
   # and keeping no cache outside the tree. It reads every tracked file: one
-  # that no formatter claims and no exclude names fails it (core.7).
+  # that no formatter claims and no exclude names fails it (core.5).
   format:
     command: 'treefmt --ci'
     inputs: ['/**/*', '/devenv.nix', '/devenv.lock']
@@ -13,7 +13,7 @@ tasks:
     options: {runFromWorkspaceRoot: true}
   # rustc, cargo, clippy and rustfmt are the build .prototools pins, and
   # OpenSpec the release devenv.nix pins, on whichever host runs the gate
-  # (core.8). It reads the tools it checks from outside the tree, so it
+  # (core.6). It reads the tools it checks from outside the tree, so it
   # never replays.
   toolchain:
     command: 'sh check-toolchain.sh'
@@ -26,7 +26,7 @@ tasks:
     tags: [check-fast]
     options: {runFromWorkspaceRoot: true}
   # Every spec under openspec/specs passes openspec validate --strict, which
-  # fails a warning as an error, by the openspec devenv.nix pins (core.8).
+  # fails a warning as an error, by the openspec devenv.nix pins (core.6).
   # It sends no usage statistics and asks for no newer release.
   specs:
     command: 'openspec validate --specs --strict --no-interactive'

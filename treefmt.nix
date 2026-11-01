@@ -3,7 +3,7 @@ let
   # treefmt's rustfmt: rustup's proxy, which runs the toolchain
   # rust-toolchain.toml names, the version .prototools pins, and installs
   # its rustfmt where a host's toolchain lacks it, so treefmt and the
-  # crate's format task run one rustfmt (core.7, core.8).
+  # crate's format task run one rustfmt (core.5, core.6).
   rustfmt = pkgs.writeShellApplication {
     name = "rustfmt";
     runtimeInputs = [ pkgs.rustup ];
@@ -12,10 +12,10 @@ let
 in
 {
   # A tracked file no formatter claims and no exclude names fails the check
-  # (core.7): a new file type is decided in the change that adds it.
+  # (core.5): a new file type is decided in the change that adds it.
   settings.on-unmatched = "fatal";
 
-  # What no formatter owns, each with its reason (core.7).
+  # What no formatter owns, each with its reason (core.5).
   settings.excludes = [
     # Prose: the docs, the records and the README; no formatter here
     # rewraps prose.

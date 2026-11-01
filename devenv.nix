@@ -80,7 +80,7 @@ in
   # The system tools are this file's, pinned by devenv.lock; moon and Rust
   # are .prototools', installed by the boom:proto:install task on
   # entering the shell and activated by enterShell. OpenSpec is the release
-  # pinned above, never the host's (core.8).
+  # pinned above, never the host's (core.6).
   packages = [
     pkgs.git
     proto
