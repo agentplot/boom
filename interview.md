@@ -75,7 +75,77 @@ well-designed boom must make that impossible."
 
 ### Asked
 
-Not yet asked.
+**Is a name unique across every kind of record, or within its kind?**
+The user: one name space. A citation carries no kind, so a name
+resolves alone.
+
+- **`one-name-space`** (requirement). No two records of one ledger share
+  a name, whatever their kinds; a second record under a taken name is
+  refused when it reaches the default branch, naming the record that
+  holds it. The same name and the same version brought by two branches
+  are one proposal, and the second adds nothing. Rules out: a context
+  `billing` and a claim `billing`; a rename after the merge to settle a
+  clash; a name made unique by a number boom appends. Not ruled out: the
+  same name in two ledgers. Source: the user, 2026-11-01.
+
+**Two branches each amend one standing claim, and one is accepted:
+what of the other?** The user: refused until it is proposed again on
+the version that stands.
+
+- **`amend-names-its-base`** (requirement). An amendment names the
+  version it amends, and accepting it is refused unless that version is
+  the one that stands; the refusal names the standing version and
+  records nothing. Rules out: a later accept silently replacing a
+  version its acceptor never read; boom merging two amendments into one
+  text. Not ruled out: two amendments pending side by side; a person
+  rejecting one and accepting the other; the proposer proposing the same
+  words again on the new base, as a new version. Source: the user,
+  2026-11-01.
+
+**Is an ordinal counted per kind across the ledger, or per view?** The
+user: per kind, across the ledger.
+
+- **`ordinal-per-kind-ledger-wide`** (requirement). A record's display
+  ordinal is its place among the records of its kind, by first
+  acceptance on the ledger's default branch, and it never changes once
+  given. Rules out: an ordinal that shifts when a claim is re-attached
+  or a view is filtered; an ordinal for a proposed or rejected record; a
+  superseded record losing its ordinal; an amendment taking a new one.
+  Not ruled out: gaps in a view of one scope; a view that shows no
+  ordinal. Source: the user, 2026-11-01.
+
+**What does boom's own repository do now, before boom can manage it?**
+The user: names everywhere, now.
+
+- **`boom-names-everything-now`** (rule). In this repository, a
+  decision record, a core rule and a clause, invariant or scenario of
+  the statement each carry a short kebab name; a record's file is
+  `docs/adr/<name>.md`, its frontmatter names it and holds no number;
+  a rule's id is `core.<name>`; a clause opens with its name and is
+  anchored by it; a citation names it, `(status-from-events, record
+  five-records)`. The site shows ordinals ("Record 0002", "Clause 12")
+  computed at build from the order each landed on main. A check in
+  `check-fast`, run on the candidate, fails when two records, two rules
+  or two items of the statement share a name. Record 0001 and core.1 to
+  core.6 keep their ids as legacy aliases, cited only as legacy. Rules
+  out: a number in a filename, a frontmatter field, an id or a
+  citation; a check that holds records to unique numbers. Source: the
+  user, 2026-11-01.
+
+**The rule for `core.md`.** The user kept it as proposed.
+
+- **`core.names-not-numbers`** (rule, for `core.md`). A record, a rule,
+  a clause, an invariant or a scenario is identified by a name fixed
+  when it is written and unique in its repository, and every citation
+  names it; a number is shown only as an ordinal computed from the
+  order things landed on main, never written into a filename, an id, a
+  field or a citation. Rules out: a branch's records numbered "after the
+  last" and renumbered when main moves, as another repository's
+  interview renumbered 22 records and 75 rules twice, rewriting every
+  citation; a filename `0007-<title>.md`; `core.12` as a new rule's id; a
+  check that holds records to unique numbers. Not ruled out: record 0001
+  and core.1 to core.6, cited only as legacy; an ordinal shown on a page
+  or in a heading. Source: the user, 2026-11-01.
 
 ## The ledger's storage and merge behaviour
 
