@@ -508,7 +508,55 @@ a sync request lands once the gate passes.
 
 ## The command line, its JSON and its exit codes
 
-Not yet asked.
+### What the material settles
+
+- **`one-engine-every-command-json`** (requirement). boom is one engine,
+  a library and the `boom` command, with thin wrappers around it; every
+  command takes `--json`. Source: the design's surfaces, the change's
+  section on the surfaces (C.8).
+
+### Asked
+
+**Which exit codes?** The user: 0, 1, 2 and 3.
+
+- **`exit-codes`** (requirement). Every command exits 0 when it did what
+  was asked, or the check found every claim holds; 1 on a finding, the
+  check finding a claim violated or unclear; 2 when it refuses, as for
+  an agent's accept, a name already taken, an amendment on a base no
+  longer standing or an unknown name; 3 when it could not run, as when
+  the reviewer or judge is unreachable, the ledger's push is refused
+  past its bound or the ledger is unreadable. On 2 and 3 nothing is
+  written. 3 is the code a gate's policy names as not run. Rules out: a
+  refusal and an outage sharing a code; a write half done on 2 or 3; any
+  other code. Source: the user, 2026-11-01.
+
+**What does boom promise about its JSON?** The user: versioned and
+additive.
+
+- **`json-versioned-additive`** (requirement). With `--json` a command
+  prints exactly one JSON object on standard output, naming its format
+  and major version (`"format": "boom-backlog/1"`); within a major a
+  field is only added, never renamed, removed or given a new meaning; a
+  refusal or a not-run is an object with its reason, in the shape
+  flume's answers use; with `--json`, every word for a person goes to
+  standard error. Rules out: a log line on standard output under
+  `--json`; a field renamed in a minor release; a caller left to parse
+  words. Not ruled out: a new major served beside the old for a release.
+  Source: the user, 2026-11-01; the storage convention's rule 4.
+
+**Does a command run from its arguments alone, and is a repeated write
+harmless?** The user: no prompts, and a repeat adds nothing.
+
+- **`no-prompts-repeats-add-nothing`** (requirement). Every command runs
+  from its arguments, its settings and the ledger, and never reads an
+  answer from its terminal; a write run again with the same arguments
+  (the same name at the same version proposed, the same signal
+  challenging the same claim) adds nothing and answers as the first
+  did. Rules out: a confirmation prompt; a second identical event in the
+  ledger; an agent stuck on a prompt it cannot answer. Not ruled out: a
+  hardware key's touch or a biometric prompt for a person's signature,
+  which is the key's and not boom's; `--dry-run` on any write. Source:
+  the user, 2026-11-01.
 
 ## boom mcp and the Claude Code and herdr plugins
 
