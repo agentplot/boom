@@ -73,8 +73,10 @@ text. A link to a renamed repository names its new address.
   reads "[Boomdrive]", in the brackets the interview puts around its
   other edits to a quotation.
 - The site takes the family's bar and footer from
-  `@agentplot/site-theme`. The release it pins, v0.1.2, says Flywheel,
-  and the site says Boomdrive once it pins a release with the new names.
+  `@agentplot/site-theme`. It pins v0.1.3, the release with the new
+  names, so its bar and footer say Boomdrive and timber and link to
+  their new addresses. The site passes the theme no member id the
+  rename changed.
 - This record names Boomdrive Cloud, which core.4's words "hosted
   service" keep out. The user ruled in the constitution interview of
   2026-11-01 that the umbrella and its products may be named
