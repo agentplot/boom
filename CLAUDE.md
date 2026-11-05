@@ -6,6 +6,19 @@ decision records, a design book, a context map) computed from the
 ledger, and `boom check` reading the work against the claims that hold.
 For now the crate prints its version and nothing more.
 
+## The family
+
+**The family.** This tool works with the others of the Boomdrive
+family: sluice (the merge queue), Flume (places and their agents),
+Boomdrive (the runner), timber, weir and boom. Each tool's statement is
+in agentplot/blueprints, `design/<tool>/requirements.md`. Before
+designing or fixing a behavior here, look at how the related tools do
+the same thing, in their code and their statements: readiness,
+configuration, credentials, retries, what a place is. Where two tools do
+one thing, reconcile them into one design with one owner the others call
+or cite, and say so in the design. Never fix one tool alone when the
+cause is that the tools differ.
+
 ## Rules
 
 The rules are in `docs/architecture/`: `core.md` binds wherever a change
