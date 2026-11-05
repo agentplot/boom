@@ -181,7 +181,7 @@ the import topic.
 
 **Where does a ledger live, and where may an event be written?** The
 user: "As long as this is grounded in the storage rules we established
-for the flywheel tools, I believe. This is under [a private
+for the [Boomdrive] tools, I believe. This is under [a private
 repository's] design I think." boom was then set against that
 convention, and the user kept it.
 
